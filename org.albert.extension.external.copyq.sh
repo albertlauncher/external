@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -o pipefail -o nounset
+
 copyq_get_row(){
     local copyq_row="$(copyq read $1 | head -1 | sed -e 's/^[[:space:]]*//')"
 
@@ -69,6 +71,7 @@ main() {
         ;;
 
         "QUERY")
+            ALBERT_QUERY=${ALBERT_QUERY:-}
             QUERYSTRING="${ALBERT_QUERY:2}"
             build_albert_query "$QUERYSTRING"
             exit 0
