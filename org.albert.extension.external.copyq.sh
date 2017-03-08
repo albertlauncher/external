@@ -37,7 +37,7 @@ build_json() {
     "icon": "/usr/share/icons/hicolor/scalable/apps/copyq-normal.svg",
     "description": "$count",
     "actions": [{
-        "name": "$row",
+        "name": "copy $row to clipboard",
         "command": "copyq",
         "arguments": ["select", "$count"]
     }]
