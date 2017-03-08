@@ -29,7 +29,7 @@ build_json() {
 },
 EOM
 
-    echo -n $json
+    echo -n "$json"
 }
 
 build_albert_query() {
