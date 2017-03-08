@@ -36,13 +36,14 @@ build_albert_query() {
     local count="$1"
     local return='{"items":['
     local json=''
+    local row
 
     if [[ $count =~ ^-?[0-9]+$ ]]; then
-        local row=$(copyq_get_row "$count")
+        row=$(copyq_get_row "$count")
         json=$(build_json "$count" "$row")
     else
         for count in {0..10}; do
-            local row=$(copyq_get_row "$count")
+            row=$(copyq_get_row "$count")
             new=$(build_json "$count" "$row")
 
             json="$json$new"
