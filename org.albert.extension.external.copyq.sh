@@ -2,8 +2,24 @@
 
 set -e -o pipefail -o nounset
 
-copyq_get_row(){
-    local copyq_row="$(copyq read $1 | head -1 | sed -e 's/^[[:space:]]*//')"
+send_metadata() {
+    local metadata
+
+    metadata='{
+    "iid":"org.albert.extension.external/v2.0",
+    "name":"Clipboard Manager",
+    "version":"1.2",
+    "author":"BarbUk",
+    "dependencies":["copyq"],
+    "trigger":"h"
+}'
+    echo -n "${metadata}"
+}
+
+copyq_get_row() {
+    local copyq_row
+    local count="$1"
+    copyq_row="$(copyq read "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
 
     # clean from non compatible json char
     printf -v clean_copyq_row "%q" "$copyq_row"
@@ -59,15 +75,7 @@ build_albert_query() {
 main() {
     case $ALBERT_OP in
         "METADATA")
-            STDOUT='{
-                "iid":"org.albert.extension.external/v2.0",
-                "name":"Clipboard Manager",
-                "version":"1.1",
-                "author":"BarbUk",
-                "dependencies":["copyq"],
-                "trigger":"h"
-            }'
-            echo -n "${STDOUT}"
+            send_metadata
             exit 0
         ;;
 
