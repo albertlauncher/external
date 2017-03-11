@@ -20,7 +20,7 @@ if albert_op == "METADATA":
         "version": "0.1",
         "author": "Will Timpson",
         "dependencies": ["tomboy", "python-dbus"],
-        "trigger": "t "
+        "trigger": "tb "
     }"""
     print(metadata)
     sys.exit(0)
