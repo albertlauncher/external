@@ -36,19 +36,16 @@ elif albert_op == "QUERY":
 
     items = []
     for note in tomboy.SearchNotes(albert_query, False):
-        item = {}
-        item["id"] = note
-        item["name"] = tomboy.GetNoteTitle(note)
-        item["description"] = "Tomboy note"
-        item["icon"] = "tomboy"
-        item["actions"] = []
-
-        action = {}
-        action["name"] = "Open Note"
-        action["command"] = "tomboy"
-        action["arguments"] = ["--open-note", item["id"]]
-        item["actions"].append(action)
-
+        item = {"id": note,
+                "name": tomboy.GetNoteTitle(note),
+                "Description": "Tomboy Note",
+                "icon": "tomboy",
+                "actions": [{
+                    "name": "Open Note",
+                    "command": "tomboy",
+                    "arguments": ["--open-note", note]
+                    }]
+                }
         items.append(item)
 
     print(json.dumps({"items": items}))
