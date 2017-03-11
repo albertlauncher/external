@@ -30,6 +30,31 @@ elif albert_op == "NAME":
     sys.exit(0)
 
 elif albert_op == "QUERY":
+    def build_action(label, interface, string=None):
+        action = {
+            "name": label,
+            "command": "dbus-send",
+            "arguments": [
+                "--type=method_call",
+                "--dest=org.gnome.Tomboy",
+                "/org/gnome/Tomboy/RemoteControl",
+                interface
+            ]
+        }
+        if string:
+            action['arguments'].append("string:{}".format(string))
+
+        return action
+
+    def build_item(id, title, actions):
+        item = {
+            "id": id,
+            "name": title,
+            "description": "Tomboy Notes",
+            "icon": "tomboy",
+            "actions": actions
+        }
+        return item
 
     bus = SessionBus()
     tomboy = bus.get("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
@@ -44,26 +69,9 @@ elif albert_op == "QUERY":
     for note in tomboy.SearchNotes(query, False):
         action_list = []
         for label, interface in actions.items():
-            action_list.append({
-                "name": label,
-                "command": "dbus-send",
-                "arguments": [
-                    "--type=method_call",
-                    "--dest=org.gnome.Tomboy",
-                    "/org/gnome/Tomboy/RemoteControl",
-                    interface,
-                    "string:{}".format(note)
-                ]
-            })
+            action_list.append(build_action(label, interface, note))
 
-        item = {
-            "id": note,
-            "name": tomboy.GetNoteTitle(note),
-            "description": "Tomboy Note",
-            "icon": "tomboy",
-            "actions": action_list
-        }
-        items.append(item)
+        items.append(build_item(note, tomboy.GetNoteTitle(note), action_list))
 
     print(json.dumps({"items": items}))
     sys.exit(0)
