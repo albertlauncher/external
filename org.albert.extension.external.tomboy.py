@@ -5,7 +5,7 @@
     to add a trigger if you have a lot of notes.
 """
 
-import dbus
+from pydbus import SessionBus
 import os
 import sys
 import json
@@ -28,26 +28,10 @@ elif albert_op == "NAME":
     print("Tomboy")
     sys.exit(0)
 
-elif albert_op == "INITIALIZE":
-    sys.exit(0)
-
-elif albert_op == "FINALIZE":
-    sys.exit(0)
-
-elif albert_op == "SETUPSESSION":
-    sys.exit(0)
-
-elif albert_op == "SETUPSESSION":
-    sys.exit(0)
-
-elif albert_op == "TEARDOWNSESSION":
-    sys.exit(0)
-
 elif albert_op == "QUERY":
 
-    bus = dbus.SessionBus()
-    obj = bus.get_object("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
-    tomboy = dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
+    bus = SessionBus()
+    tomboy = bus.get("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
     albert_query = os.environ.get("ALBERT_QUERY")
 
     items = []
@@ -68,4 +52,7 @@ elif albert_op == "QUERY":
         items.append(item)
 
     print(json.dumps({"items": items}))
+    sys.exit(0)
+
+else:
     sys.exit(0)
