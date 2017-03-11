@@ -41,10 +41,25 @@ elif albert_op == "QUERY":
             "name": tomboy.GetNoteTitle(note),
             "Description": "Tomboy Note",
             "icon": "tomboy",
-            "actions": [{
-                "name": "Open Note",
-                "command": "tomboy",
-                "arguments": ["--open-note", note]
+            "actions": [{"name": "Open Note",
+                "command": "dbus-send",
+                "arguments": [
+                    "--type=method_call",
+                    "--dest=org.gnome.Tomboy",
+                    "/org/gnome/Tomboy/RemoteControl",
+                    "org.gnome.Tomboy.RemoteControl.DisplayNote",
+                    "string:{}".format(note)
+                    ]
+                },
+                {"name": "Delete Note",
+                "command": "dbus-send",
+                "arguments": [
+                    "--type=method_call",
+                    "--dest=org.gnome.Tomboy",
+                    "/org/gnome/Tomboy/RemoteControl",
+                    "org.gnome.Tomboy.RemoteControl.DeleteNote",
+                    "string:{}".format(note)
+                    ]
                 }]
             }
         items.append(item)
