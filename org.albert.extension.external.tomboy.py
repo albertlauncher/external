@@ -59,19 +59,28 @@ elif albert_op == "QUERY":
     bus = SessionBus()
     tomboy = bus.get("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
     query = ' '.join(os.environ.get("ALBERT_QUERY").split(' ')[1:])
-
     items = []
-    actions = {
+
+    note_actions = {
         "Open Note": "org.gnome.Tomboy.RemoteControl.DisplayNote",
         "Hide Note": "org.gnome.Tomboy.RemoteControl.HideNote",
         "Delete Note": "org.gnome.Tomboy.RemoteControl.DeleteNote"
     }
     for note in tomboy.SearchNotes(query, False):
         action_list = []
-        for label, interface in actions.items():
+        for label, interface in note_actions.items():
             action_list.append(build_action(label, interface, note))
 
         items.append(build_item(note, tomboy.GetNoteTitle(note), action_list))
+
+    app_actions = [
+        ("Create New Note", "org.gnome.Tomboy.RemoteControl.CreateNote", None),
+        ("Display Search Window", "org.gnome.Tomboy.RemoteControl.DisplaySearch", None)
+    ]
+    for app in app_actions:
+        label, interface, string = app
+        action_list = [build_action(label, interface)]
+        items.append(build_item(label, label, action_list))
 
     print(json.dumps({"items": items}))
     sys.exit(0)
