@@ -36,32 +36,33 @@ elif albert_op == "QUERY":
     query = ' '.join(os.environ.get("ALBERT_QUERY").split(' ')[1:])
 
     items = []
+    actions = {
+        "Open Note": "org.gnome.Tomboy.RemoteControl.DisplayNote",
+        "Hide Note": "org.gnome.Tomboy.RemoteControl.HideNote",
+        "Delete Note": "org.gnome.Tomboy.RemoteControl.DeleteNote"
+    }
     for note in tomboy.SearchNotes(query, False):
-        item = {"id": note,
+        action_list = []
+        for label, interface in actions.items():
+            action_list.append({
+                "name": label,
+                "command": "dbus-send",
+                "arguments": [
+                    "--type=method_call",
+                    "--dest=org.gnome.Tomboy",
+                    "/org/gnome/Tomboy/RemoteControl",
+                    interface,
+                    "string:{}".format(note)
+                ]
+            })
+
+        item = {
+            "id": note,
             "name": tomboy.GetNoteTitle(note),
-            "Description": "Tomboy Note",
+            "description": "Tomboy Note",
             "icon": "tomboy",
-            "actions": [{"name": "Open Note",
-                "command": "dbus-send",
-                "arguments": [
-                    "--type=method_call",
-                    "--dest=org.gnome.Tomboy",
-                    "/org/gnome/Tomboy/RemoteControl",
-                    "org.gnome.Tomboy.RemoteControl.DisplayNote",
-                    "string:{}".format(note)
-                    ]
-                },
-                {"name": "Delete Note",
-                "command": "dbus-send",
-                "arguments": [
-                    "--type=method_call",
-                    "--dest=org.gnome.Tomboy",
-                    "/org/gnome/Tomboy/RemoteControl",
-                    "org.gnome.Tomboy.RemoteControl.DeleteNote",
-                    "string:{}".format(note)
-                    ]
-                }]
-            }
+            "actions": action_list
+        }
         items.append(item)
 
     print(json.dumps({"items": items}))
