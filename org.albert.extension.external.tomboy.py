@@ -38,7 +38,7 @@ elif albert_op == "QUERY":
                 "--type=method_call",
                 "--dest=org.gnome.Tomboy",
                 "/org/gnome/Tomboy/RemoteControl",
-                interface
+                "org.gnome.Tomboy.RemoteControl.{}".format(interface)
             ]
         }
         if string:
@@ -61,24 +61,23 @@ elif albert_op == "QUERY":
     query = ' '.join(os.environ.get("ALBERT_QUERY").split(' ')[1:])
     items = []
 
-    note_actions = {
-        "Open Note": "org.gnome.Tomboy.RemoteControl.DisplayNote",
-        "Hide Note": "org.gnome.Tomboy.RemoteControl.HideNote",
-        "Delete Note": "org.gnome.Tomboy.RemoteControl.DeleteNote"
-    }
+    note_actions = [
+        ("Open Note", "DisplayNote"),
+        ("Hide Note", "HideNote"),
+        ("Delete Note", "DeleteNote")
+    ]
     for note in tomboy.SearchNotes(query, False):
         action_list = []
-        for label, interface in note_actions.items():
+        for label, interface in note_actions:
             action_list.append(build_action(label, interface, note))
 
         items.append(build_item(note, tomboy.GetNoteTitle(note), action_list))
 
     app_actions = [
-        ("Create New Note", "org.gnome.Tomboy.RemoteControl.CreateNote", None),
-        ("Display Search Window", "org.gnome.Tomboy.RemoteControl.DisplaySearch", None)
+        ("Create New Note", "CreateNote"),
+        ("Display Search Window", "DisplaySearch")
     ]
-    for app in app_actions:
-        label, interface, string = app
+    for label, interface in app_actions:
         action_list = [build_action(label, interface)]
         items.append(build_item(label, label, action_list))
 
