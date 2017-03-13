@@ -11,7 +11,17 @@ import os
 import sys
 import json
 
+bus = SessionBus()
+tomboy = bus.get("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
 albert_op = os.environ.get("ALBERT_OP")
+
+if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
+        response = getattr(tomboy, sys.argv[1])(sys.argv[2])
+    else:
+        response = getattr(tomboy, sys.argv[1])()
+    if sys.argv[1] == "CreateNote":
+        tomboy.DisplayNote(response)
 
 if albert_op == "METADATA":
     metadata = {
@@ -33,16 +43,11 @@ elif albert_op == "QUERY":
     def build_action(name, interface, arguments=None):
         action = {
             "name": name,
-            "command": "dbus-send",
-            "arguments": [
-                "--type=method_call",
-                "--dest=org.gnome.Tomboy",
-                "/org/gnome/Tomboy/RemoteControl",
-                "org.gnome.Tomboy.RemoteControl.{}".format(interface)
-            ]
+            "command": sys.argv[0],
+            "arguments": [interface]
         }
         if arguments:
-            action['arguments'].append("string:{}".format(arguments))
+            action['arguments'].append(arguments)
 
         return action
 
@@ -56,8 +61,6 @@ elif albert_op == "QUERY":
         }
         return item
 
-    bus = SessionBus()
-    tomboy = bus.get("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
     query = ' '.join(os.environ.get("ALBERT_QUERY").split(' ')[1:])
     items = []
 
