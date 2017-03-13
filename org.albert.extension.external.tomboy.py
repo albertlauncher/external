@@ -14,15 +14,15 @@ import json
 albert_op = os.environ.get("ALBERT_OP")
 
 if albert_op == "METADATA":
-    metadata="""{
+    metadata = {
         "iid": "org.albert.extension.external/v2.0",
         "name": "Tomboy",
         "version": "0.1",
         "author": "Will Timpson",
         "dependencies": ["tomboy", "python-pydbus"],
         "trigger": "tb "
-    }"""
-    print(metadata)
+    }
+    print(json.dumps(metadata))
     sys.exit(0)
 
 elif albert_op == "NAME":
@@ -30,9 +30,9 @@ elif albert_op == "NAME":
     sys.exit(0)
 
 elif albert_op == "QUERY":
-    def build_action(label, interface, string=None):
+    def build_action(name, interface, arguments=None):
         action = {
-            "name": label,
+            "name": name,
             "command": "dbus-send",
             "arguments": [
                 "--type=method_call",
@@ -41,15 +41,15 @@ elif albert_op == "QUERY":
                 "org.gnome.Tomboy.RemoteControl.{}".format(interface)
             ]
         }
-        if string:
-            action['arguments'].append("string:{}".format(string))
+        if arguments:
+            action['arguments'].append("string:{}".format(arguments))
 
         return action
 
-    def build_item(id, title, actions):
+    def build_item(id, name, actions):
         item = {
             "id": id,
-            "name": title,
+            "name": name,
             "description": "Tomboy Notes",
             "icon": "tomboy",
             "actions": actions
