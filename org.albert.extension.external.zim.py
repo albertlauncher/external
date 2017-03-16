@@ -3,14 +3,32 @@
 from __future__ import print_function
 import os
 import re
-import sys
 import json
 from subprocess import Popen, PIPE
 
 
 ZIM_ICON = "zim"
 MATCH_THRESHOLD = 60
-MATCH_PAGE_THRESHOLD = 60
+MATCH_LIMIT = 3
+USING_FUZZY = True
+
+try:
+    import fuzzywuzzy.process
+except ImportError:
+    import difflib
+    USING_FUZZY = False
+
+
+def best_matches(term, options, cutoff=MATCH_THRESHOLD):
+    if USING_FUZZY:
+        matches = fuzzywuzzy.process.extractBests(term, options, limit=MATCH_LIMIT)
+        good_matches = []
+        for name, score in matches:
+            if score > MATCH_THRESHOLD:
+                good_matches += [name]
+        return good_matches
+    else:
+        return difflib.get_close_matches(term, options, cutoff=MATCH_THRESHOLD / 100.0, n=MATCH_LIMIT)
 
 
 class Notebook():
@@ -87,9 +105,7 @@ def metadata():
 
 
 def _init():
-    # check if we can import fuzzywizzy
-    import fuzzywuzzy
-    sys.exit(0)  # All is good
+    return
 
 
 def _del():
@@ -114,8 +130,6 @@ def make_item(_id, name, descr, actions, icon=ZIM_ICON):
 
 
 def query(s):
-    from fuzzywuzzy import process
-
     # TODO(derpferd): Maybe this can be done less than on every query
     notebooks = get_zim_notebooks()
     notebooks_by_name = dict(map(lambda x: (x.name, x), notebooks))
@@ -150,30 +164,28 @@ def query(s):
         items += [make_item("open.zim", "Open Zim", "Open Zim", [action])]
 
     # Zim Notebook by name
-    matches = process.extractBests(first_word, notebooks_by_name.keys(), limit=3)
-    for name, score in matches:
-        if score > MATCH_THRESHOLD:
-            action = make_action(args=[name])
-            items += [make_item("zim." + name, name, "Open " + name, [action])]
+    matches = best_matches(first_word, notebooks_by_name.keys())
+    for name in matches:
+        action = make_action(args=[name])
+        items += [make_item("zim." + name, name, "Open " + name, [action])]
 
     # Pick the best match as the notebook to search
     notebook = None
     pages = None
     pages_by_name = None
-    if matches[0][1] > MATCH_THRESHOLD:
-        notebook = notebooks_by_name[matches[0][0]]
+    if len(matches) > 0:
+        notebook = notebooks_by_name[matches[0]]
         pages = get_zim_pages_for_notebook(notebook)
         pages_by_name = dict(map(lambda x: (x.name, x), pages))
 
     # Zim Page by name
     if notebook:
-        matches = process.extractBests(query, pages_by_name.keys(), limit=3)
-        for name, score in matches:
-            if score > MATCH_PAGE_THRESHOLD:
-                action = make_action(args=[notebook.name, name])
-                items += [make_item("zim." + notebook.name + "." + name, "Open " + name,
-                                    "Open zim to " + name + " in " + notebook.name,
-                                    [action])]
+        matches = best_matches(query, pages_by_name.keys())
+        for name in matches:
+            action = make_action(args=[notebook.name, name])
+            items += [make_item("zim." + notebook.name + "." + name, "Open " + name,
+                                "Open zim to " + name + " in " + notebook.name,
+                                [action])]
 
     # Notebook search
     if notebook:
