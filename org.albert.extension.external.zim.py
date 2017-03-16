@@ -89,7 +89,6 @@ def metadata():
 def _init():
     # check if we can import fuzzywizzy
     import fuzzywuzzy
-    print("Found fuzzywuzzy version", fuzzywuzzy.__version__, file=sys.stderr)
     sys.exit(0)  # All is good
 
 
