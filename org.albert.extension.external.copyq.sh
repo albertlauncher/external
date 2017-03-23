@@ -11,7 +11,7 @@ send_metadata() {
     "version":"1.2",
     "author":"BarbUk",
     "dependencies":["copyq"],
-    "trigger":"h"
+    "trigger":"hist"
 }'
     echo -n "${metadata}"
 }
