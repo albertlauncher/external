@@ -19,8 +19,7 @@ send_metadata() {
 copyq_get_row() {
     local copyq_row
     local count="$1"
-    copyq_row="$(copyq read "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
-
+    copyq_row="$(copyq read text/plain "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
     # clean from non compatible json char
     printf -v clean_copyq_row "%q" "$copyq_row"
     echo -n "$clean_copyq_row"
@@ -59,6 +58,9 @@ build_albert_query() {
     else
         for count in {0..10}; do
             row=$(copyq_get_row "$count")
+            if [[ "$row" == "''" ]]; then
+                continue
+            fi
             new=$(build_json "$count" "$row")
 
             json="$json$new"
