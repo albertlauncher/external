@@ -80,7 +80,7 @@ main() {
 
         "QUERY")
             ALBERT_QUERY=${ALBERT_QUERY:-}
-            QUERYSTRING="${ALBERT_QUERY:2}"
+            QUERYSTRING="${ALBERT_QUERY:5}"
             build_albert_query "$QUERYSTRING"
             exit 0
         ;;
