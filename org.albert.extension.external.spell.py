@@ -29,15 +29,15 @@ spell de viel
 albert_op = os.environ.get("ALBERT_OP")
 
 if albert_op == "METADATA":
-    metadata="""{
-      "iid":"org.albert.extension.external/v2.0",
-      "name":"spell",
-      "version":"1.0",
-      "author":"Marek Mazur",
-      "dependencies":[],
-      "trigger":"spell"
-    }"""
-    print(metadata)
+    metadata = {
+      "iid": "org.albert.extension.external/v2.0",
+      "name": "spell",
+      "version": "1.0",
+      "author": "Marek Mazur",
+      "dependencies": [],
+      "trigger": "spell"
+    }
+    print(json.dumps(metadata))
     sys.exit(0)
 
 elif albert_op == "NAME":
@@ -71,7 +71,7 @@ elif albert_op == "QUERY":
         language = match.group('language')
 
     if not language or not phrase:
-        print('{"items": [' + ", ".join([]) + "]}")
+        print('{"items": []}')
         sys.exit(0)
 
     class Object(object):
