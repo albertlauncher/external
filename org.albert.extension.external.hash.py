@@ -5,6 +5,9 @@ import os
 import sys
 
 
+class Object(object):
+    pass
+
 def sha1Item(srcStr):
     sha1Str = hashlib.sha1(srcStr).hexdigest()
 
@@ -62,15 +65,14 @@ def md5Item(srcStr):
 albert_op = os.environ.get("ALBERT_OP")
 
 if albert_op == "METADATA":
-    metadata = """{
-      "iid":"org.albert.extension.external/v2.0",
-      "name":"hash",
-      "version":"1.0",
-      "author":"glight2000",
-      "dependencies":[],
-      "trigger":"hash"
-    }"""
-    print(metadata)
+    metadata = Object()
+    metadata.iid = "org.albert.extension.external/v2.0"
+    metadata.name = "hash"
+    metadata.version = "1.0"
+    metadata.author = "glight2000"
+    metadata.dependencies = []
+    metadata.trigger = "hash"
+    print(json.dumps(metadata, default=lambda o: o.__dict__))
     sys.exit(0)
 
 elif albert_op == "NAME":
@@ -93,10 +95,6 @@ elif albert_op == "QUERY":
     albert_query = os.environ.get("ALBERT_QUERY")
 
     srcStr = albert_query[5:].lstrip().rstrip()
-
-
-    class Object(object):
-        pass
 
 
     items = []
