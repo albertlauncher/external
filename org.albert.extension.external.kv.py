@@ -78,16 +78,14 @@ albert_op = os.environ.get("ALBERT_OP")
 mode = os.environ.get("MODE")
 
 if albert_op == "METADATA":
-    metadata = """{
-      "iid":"org.albert.extension.external/v2.0",
-      "name":"kv",
-      "version":"1.0",
-      "author":"glight2000",
-      "dependencies":[],
-      "trigger":"kv"
-    }"""
-    print(metadata)
-    sys.exit(0)
+    metadata = Object()
+    metadata.iid = "org.albert.extension.external/v2.0"
+    metadata.name = "kv"
+    metadata.version = "1.0"
+    metadata.author = "glight2000"
+    metadata.dependencies = []
+    metadata.trigger = "kv"
+    print(json.dumps(metadata, default=lambda o: o.__dict__))
 
 elif albert_op == "NAME":
     sys.exit(0)
