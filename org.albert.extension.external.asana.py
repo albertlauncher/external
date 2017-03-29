@@ -85,36 +85,9 @@ elif albert_op == "QUERY":
 
     items = []
 
-    #--------------------------- ADJUST THIS BLOCK -----------------------------
     for w in ws:
         item = Item("as_"+str(w['id']), "Add Task to " + w['name'], "Add an Asana task: " + q, "vcs-added", w['project'])
         items.append(item)
-    # item = Object()
-    # item.id = "bank_account"
-    # item.name = "Bank account"
-    # item.description = "Bank account (78788098)"
-    # item.icon = "accessories-calculator"
-    # item.actions = []
-    #
-    # # The things you want the action to copy to cb
-    # actionData = {
-    #     "IBAN":"DE0587857857857856785557",
-    #     "BIC":"GENODE5867867867ko58",
-    #     "KNR":"586785678567",
-    #     "BLZ":"5856785" }
-    #
-    # for key, value in actionData.items():
-    #     action = Object()
-    #     action.command = "sh"
-    #     action.name = "Copy {} to clipboard".format(key)
-    #     action.arguments = ["-c", 'echo -n "{0}" | xclip -i; echo -n "{0}" | xclip -i -selection clipboard;'.format(value)]
-    #     item.actions.append(action)
-    #
-    # items.append(item)
-
-    # You can add furter accounts here, just copy the block above
-
-    #---------------------------------------------------------------------------
 
     results = []
     for it in items:
@@ -124,5 +97,4 @@ elif albert_op == "QUERY":
     sys.exit(0)
 
 elif albert_op == "COPYTOCLIPBOARD":
-    clipboard.copy(sys.argv[1])
     sys.exit(0)
