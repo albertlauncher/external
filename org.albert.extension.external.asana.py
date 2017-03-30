@@ -16,9 +16,9 @@ import os
 import sys
 import json
 import asana
-import logging
 
-asana_add_path = "/usr/local/share/albert/external/asana_add.py"
+asana_add_path = "/home/aze/.local/share/albert/external/asana_add.py"
+asana_cache_file_path = "asana.ws"
 token = os.environ.get("ASANA_TOKEN")
 albert_op = os.environ.get("ALBERT_OP")
 
@@ -28,7 +28,7 @@ if albert_op == "METADATA":
       "name":"Asana",
       "version":"1.0",
       "author":"Adam Gyulavari",
-      "dependencies":["asana"],
+      "dependencies":[],
       "trigger":"as"
     }"""
     print(metadata)
@@ -43,7 +43,7 @@ elif albert_op == "INITIALIZE":
     ws = list(client.workspaces.find_all())
     for w in ws:
         w['project'] = list(client.projects.find_all({"workspace": w['id']}))
-    open("asana.ws", "w").write(json.dumps(ws))
+    open(asana_cache_file_path, "w").write(json.dumps(ws))
     if client != None:
         sys.exit(0)
     else:
@@ -59,9 +59,9 @@ elif albert_op == "TEARDOWNSESSION":
     sys.exit(0)
 
 elif albert_op == "QUERY":
-    ws = json.loads(open("asana.ws", "r").read())
+    ws = json.loads(open(asana_cache_file_path, "r").read())
     albert_query = os.environ.get("ALBERT_QUERY")
-    if albert_query[2] == "-":
+    if len(albert_query) > 2 and albert_query[2] == "-":
         pq = albert_query[3:].split(" ")[0]
         q = " ".join(albert_query[3:].split(" ")[1:])
     else:
