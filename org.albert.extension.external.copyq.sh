@@ -1,5 +1,6 @@
 #!/bin/bash
 
+## Exit on error, var unset and pipefail
 set -e -o pipefail -o nounset
 
 send_metadata() {
@@ -16,15 +17,20 @@ send_metadata() {
     echo -n "${metadata}"
 }
 
+## get a row from copyq history stack
 copyq_get_row() {
     local copyq_row
     local count="$1"
+
+    ## I take just the first line, in case there is a block of text
     copyq_row="$(copyq read text/plain "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
+
     # clean from non compatible json char
     printf -v clean_copyq_row "%q" "$copyq_row"
     echo -n "$clean_copyq_row"
 }
 
+## Build json object for albert query
 build_json() {
     local count="$1"
     shift 1
@@ -52,10 +58,13 @@ build_albert_query() {
     local json=''
     local row
 
+    ## If the query is a number, just get that row from
+    ## copyq history stack
     if [[ $count =~ ^-?[0-9]+$ ]]; then
         row=$(copyq_get_row "$count")
         json=$(build_json "$count" "$row")
     else
+        ## else get the last 11
         for count in {0..10}; do
             row=$(copyq_get_row "$count")
             if [[ "$row" == "''" ]]; then
@@ -66,6 +75,7 @@ build_albert_query() {
             json="$json$new"
         done
     fi
+
     # remove last comma
     json=${json::-1}
 
@@ -82,7 +92,7 @@ main() {
 
         "QUERY")
             ALBERT_QUERY=${ALBERT_QUERY:-}
-            QUERYSTRING="${ALBERT_QUERY:5}"
+            QUERYSTRING="${ALBERT_QUERY:3}"
             build_albert_query "$QUERYSTRING"
             exit 0
         ;;
@@ -100,4 +110,6 @@ main() {
     	;;
     esac
 }
+
+## Call the main function
 main
