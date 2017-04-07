@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-""" A quick and dirty shim to search Tomboy Notes over dbus.
-    Note: This does a full-text search on all of your notes for each keystroke, so it may introduce
-    noticeable lag while searching if you have a lot of notes. As long as you use a trigger it
-    won't affect your non-Tomboy searches.
-"""
+""" A quick and dirty shim to search Tomboy Notes over dbus."""
 
-from pydbus import SessionBus
 import os
 import sys
 import json
+
+from pydbus import SessionBus
 
 bus = SessionBus()
 tomboy = bus.get("org.gnome.Tomboy", "/org/gnome/Tomboy/RemoteControl")
@@ -33,10 +30,6 @@ if albert_op == "METADATA":
         "trigger": "tb "
     }
     print(json.dumps(metadata))
-    sys.exit(0)
-
-elif albert_op == "NAME":
-    print("Tomboy")
     sys.exit(0)
 
 elif albert_op == "QUERY":
@@ -87,5 +80,5 @@ elif albert_op == "QUERY":
     print(json.dumps({"items": items}))
     sys.exit(0)
 
-else:
+elif albert_op in ["INITIALIZE", "FINALIZE", "SETUPSESSION", "TEARDOWNSESSION"]:
     sys.exit(0)
