@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-""" A quick and dirty shim to search Gnote over dbus.
-    Note: This does a full-text search on all of your notes for each keystroke, so it may introduce
-    noticeable lag while searching if you have a lot of notes. As long as you use a trigger it
-    won't affect your non-Gnote searches.
-"""
+""" A quick and dirty shim to search Gnote over dbus."""
 
-from pydbus import SessionBus
 import os
 import sys
 import json
+
+from pydbus import SessionBus
 
 bus = SessionBus()
 gnote = bus.get("org.gnome.Gnote", "/org/gnome/Gnote/RemoteControl")
@@ -34,10 +31,6 @@ if albert_op == "METADATA":
         "trigger": "gn "
     }
     print(json.dumps(metadata))
-    sys.exit(0)
-
-elif albert_op == "NAME":
-    print("Gnote")
     sys.exit(0)
 
 elif albert_op == "QUERY":
@@ -88,5 +81,5 @@ elif albert_op == "QUERY":
     print(json.dumps({"items": items}))
     sys.exit(0)
 
-else:
+elif albert_op in ["INITIALIZE", "FINALIZE", "SETUPSESSION", "TEARDOWNSESSION"]:
     sys.exit(0)
