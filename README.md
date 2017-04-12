@@ -7,12 +7,12 @@ and send a pull request on GitHub.
 
 To install the extensions in user space type the following in your terminal:
 ```bash
-git clone git@github.com:albertlauncher/external.git "$HOME/.local/share/albert/"
+git clone git@github.com:albertlauncher/external.git "$HOME/.local/share/albert/external/"
 ```
 
 If you want the extensions to be installed system wide, use the following:
 ```bash
-git clone git@github.com:albertlauncher/external.git "/usr/local/share/albert/"
+git clone git@github.com:albertlauncher/external.git "/usr/local/share/albert/external/"
 ```
 
 If you feel uncomfortable installing third party extensions that are executed on
