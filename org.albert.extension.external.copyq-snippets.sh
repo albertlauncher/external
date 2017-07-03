@@ -11,7 +11,7 @@ send_metadata() {
     "name":"Snippets Manager",
     "version":"0.1",
     "author":"turuflowers",
-    "dependencies":["copyq", "xdotool"],
+    "dependencies":["copyq"],
     "trigger":"s "
 }'
     echo -n "${metadata}"
@@ -25,6 +25,8 @@ copyq_get_row() {
 
     ## I take just the first line, in case there is a block of text
     copyq_row="$(copyq tab Snippets read text/plain "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
+
+    ## I take the name from the Note
     n="$(copyq tab Snippets read application/x-copyq-item-notes "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
 
     # clean from non compatible json char
@@ -42,16 +44,16 @@ build_json() {
 {
     "name": "$row",
     "icon": "/usr/share/icons/hicolor/scalable/apps/copyq-normal.svg",
-    "description": "$count $row",
+    "description": "$count",
     "actions": [{
         "name": "copy $row to clipboard",
         "command": "copyq",
         "arguments": ["tab", "Snippets", "select", "$count"]
-    },{
-        "name": "paste $row to active window",
-	"command": "xdotool",
-	"arguments": ["key", "--clearmodifiers", "ctrl+v"]
-    }
+        },{
+        "name": "paste...",
+        "command": "copyq",
+        "arguments": ["paste"]
+        }
     ]
 },
 EOM
