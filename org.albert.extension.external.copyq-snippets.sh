@@ -9,7 +9,7 @@ send_metadata() {
     metadata='{
     "iid":"org.albert.extension.external/v2.0",
     "name":"Snippets Manager",
-    "version":"0.1",
+    "version":"0.2",
     "author":"turuflowers",
     "dependencies":["copyq"],
     "trigger":"s "
@@ -46,13 +46,9 @@ build_json() {
     "icon": "/usr/share/icons/hicolor/scalable/apps/copyq-normal.svg",
     "description": "$count",
     "actions": [{
-        "name": "copy $row to clipboard",
+        "name": "copy/paste $row",
         "command": "copyq",
-        "arguments": ["tab", "Snippets", "select", "$count"]
-        },{
-        "name": "paste...",
-        "command": "copyq",
-        "arguments": ["paste"]
+        "arguments": ["tab", "Snippets", "text = read($count); copy(text); copySelection(text); paste()"]
         }
     ]
 },
