@@ -9,7 +9,7 @@ send_metadata() {
     metadata='{
     "iid":"org.albert.extension.external/v2.0",
     "name":"Clipboard Manager",
-    "version":"1.2",
+    "version":"1.3",
     "author":"BarbUk",
     "dependencies":["copyq"],
     "trigger":"cq "
