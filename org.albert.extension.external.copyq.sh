@@ -64,8 +64,8 @@ build_albert_query() {
         row=$(copyq_get_row "$count")
         json=$(build_json "$count" "$row")
     else
-        ## else get the last 11
-        for count in {0..10}; do
+        ## else get the last 15
+        for count in {0..14}; do
             row=$(copyq_get_row "$count")
             if [[ "$row" == "''" ]]; then
                 continue
