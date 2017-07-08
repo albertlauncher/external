@@ -44,7 +44,7 @@ build_json() {
     "actions": [{
         "name": "copy $row to clipboard",
         "command": "copyq",
-        "arguments": ["select", "$count"]
+        "arguments": ["select($count); sleep(50); paste()"]
     }]
 },
 EOM
