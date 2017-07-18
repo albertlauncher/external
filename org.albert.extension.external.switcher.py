@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import commands
+from ConfigParser import SafeConfigParser
 
 """
 
@@ -15,20 +16,27 @@ required: wmctrl
 
 albert_op = os.environ.get("ALBERT_OP")
 
+APPLICATIONS_DIR = "/usr/share/applications/"
+
 if albert_op == "METADATA":
-    metadata="""{
+    metadata={
       "iid":"org.albert.extension.external/v2.0",
       "name":"Switcher",
       "version":"0.1",
       "author":"Airking05",
       "dependencies":[],
-      "trigger":"sw "
-    }"""
-    print(metadata)
+      "trigger":":"
+    }
+    print(json.dumps(metadata))
     sys.exit(0)
 
 elif albert_op == "NAME":
     print("Switcher")
+    sys.exit(0)
+
+elif albert_op == "INITIALIZE":
+    if not commands.getstatusoutput("which wmctrl")[0] is 0:
+        sys.exit(1)
     sys.exit(0)
     
 elif albert_op == "QUERY":
@@ -39,13 +47,13 @@ elif albert_op == "QUERY":
             "arguments": ["-a",arguments]
         }
         return action
-    
-    def build_item(id,name,actions):
+   
+    def build_item(id,name,icon,description,actions):
         item = {
             "id": id,
             "name": name,
-            "description": "Switcher",
-            "icon": "",
+            "description": description,
+            "icon": icon,
             "actions": actions
             
         }
@@ -55,15 +63,25 @@ elif albert_op == "QUERY":
     window_list = commands.getoutput("wmctrl -l -x").split("\n")
     items = []
     for window_row in window_list:
-        window = window_row.split()
         action_list = []
-        name = (window[2].split("."))[-1]
+        window = window_row.split()
+        config_file = APPLICATIONS_DIR + window[2].split(".")[0] + ".desktop"
+        if not os.path.exists(config_file):
+            name = window[2].split(".")[0]
+            icon = "utilities-terminal"
+            description = name
+        else:
+            parser = SafeConfigParser()
+            parser.read(config_file)
+            name = parser.get("Desktop Entry","Name")
+            icon = parser.get("Desktop Entry","Icon")
+            description = parser.get("Desktop Entry","Comment")
         id = window[0]
-        action_list.append(build_action(name,False,window[-1]))
-        items.append(build_item(id,name,action_list))
+        action_list.append(build_action(name,False,name))
+        items.append(build_item(id,name,icon,description,action_list))
         
     print(json.dumps({"items":items}))
     sys.exit(0)
     
-elif albert_op in ["INITIALIZE", "FINALIZE", "SETUPSESSION", "TEARDOWNSESSION"]:
+elif albert_op in ["FINALIZE", "SETUPSESSION", "TEARDOWNSESSION"]:
     sys.exit(0)
