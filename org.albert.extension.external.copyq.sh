@@ -39,7 +39,7 @@ build_json() {
     read -r -d '' json << EOM
 {
     "name": "$row",
-    "icon": "/usr/share/icons/hicolor/scalable/apps/copyq-normal.svg",
+    "icon": "copyq-normal",
     "description": "$count",
     "actions": [{
         "name": "copy $row to clipboard",
