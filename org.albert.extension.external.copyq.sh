@@ -97,17 +97,17 @@ main() {
             exit 0
         ;;
         "INITIALIZE")
-    	    exit 0
-    	;;
-  	    "FINALIZE")
-    	    exit 0
-    	;;
-  	    "SETUPSESSION")
-    	    exit 0
-    	;;
-  	    "TEARDOWNSESSION")
-    	    exit 0
-    	;;
+            exit 0
+        ;;
+        "FINALIZE")
+            exit 0
+        ;;
+        "SETUPSESSION")
+            exit 0
+        ;;
+        "TEARDOWNSESSION")
+            exit 0
+        ;;
     esac
 }
 
