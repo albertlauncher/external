@@ -68,8 +68,9 @@ elif albert_op == "QUERY":
         window = window_row.split()
         window_program = window[2].split(".")[0]
         window_title = "".join(window[4:])
+        window_text = window_program + '' + window_title
         config_file = APPLICATIONS_DIR + window_program + ".desktop"
-        if  albert_query == "" or (albert_query != "" and albert_query in window_program):
+        if albert_query == "" or albert_query in window_text.lower():
             if not os.path.exists(config_file):
                 name = window_program
                 icon = "utilities-terminal"
@@ -80,7 +81,6 @@ elif albert_op == "QUERY":
                 name = parser.get("Desktop Entry","Name")
                 icon = parser.get("Desktop Entry","Icon")
                 description = window_title
-                # description = parser.get("Desktop Entry","Comment")
 
             id = window[0]
             action_list.append(build_action(name))
