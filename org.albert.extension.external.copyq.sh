@@ -97,6 +97,11 @@ main() {
             exit 0
         ;;
         "INITIALIZE")
+            if ! which copyq >/dev/null 2>&1; then
+                echo "You need to install copyq" >&2
+                exit 1
+            fi
+
             exit 0
         ;;
         "FINALIZE")
