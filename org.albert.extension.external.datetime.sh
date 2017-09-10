@@ -17,6 +17,15 @@
 # - Although the day name is localized by Albert's environment (environment
 #   variables LANG or LC_*), the displayed date format is not.
 
+# Why I added just these actions:
+# - Date in ISO format: international standard, sorts nicely, useful for
+#   filling out forms and naming files.
+# - Full date and time: might be useful when you need the full date, day, time,
+#   or parts thereof.
+# - Timestamp with dashes: not readable without dashes; with colons in the
+#   time, it would be unsuitable for filenames.
+# - No "copy time only" action because I cannot think of a use case.
+
 case $ALBERT_OP in
   "METADATA")
     METADATA='{
