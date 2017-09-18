@@ -34,7 +34,7 @@ executeAlbertExtension() {
         "name":"Current date and time to clipboard",
         "version":"1.0",
         "author":"Jakob Schöttl",
-        "dependencies":[],
+        "dependencies":["xclip"],
         "trigger":"date"
       }'
       echo -n "${METADATA}"
