@@ -24,6 +24,8 @@
 #   time, it would be unsuitable for filenames.
 # - No "copy time only" action because I cannot think of a use case.
 
+set -o errexit -o pipefail -o nounset
+
 readonly THIS_PROGRAM=$0
 
 executeAlbertExtension() {
@@ -81,13 +83,13 @@ executeAlbertExtension() {
 # Call xclip -i with $1 as stdin and pass further args to xclip.
 # That is, copy the first argument to the X clipboard.
 xclipWith1stArgAsInput() {
-  declare text=$1
+  declare text=${1:-}
   shift # left-shift arguments, discard $1
   xclip -i "$@" <<<"$text"
 }
 
 main() {
-  declare command=$1
+  declare command=${1:-}
 
   if [[ $command == "call-xclip" ]]; then
     shift # discard the "call-xclip" argument
