@@ -46,12 +46,6 @@ executeAlbertExtension() {
     "FINALIZE")
       exit 0
       ;;
-    "SETUPSESSION")
-      exit 0
-      ;;
-    "TEARDOWNSESSION")
-      exit 0
-      ;;
     "QUERY")
       declare fullDateTime isoDate daytime timestamp
       fullDateTime=$(date +'%A, %d.%m.%Y, %H:%M Uhr')
