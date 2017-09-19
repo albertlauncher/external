@@ -29,7 +29,7 @@ case $ALBERT_OP in
     amount=`echo ${ALBERT_QUERY:5} | cut -d ' ' -f1`
     from=`echo ${ALBERT_QUERY:5} | cut -d ' ' -f2`
     to=`echo ${ALBERT_QUERY:5} | cut -d ' ' -f3`
-    equation=`wget -qO- "http://www.google.com/finance/converter?a=${amount}&from=${from}&to=${to}"  | sed '/res/!d;s/<[^>]*>//g'`
+    equation=`wget -qO- "https://finance.google.com/finance/converter?a=${amount}&from=${from}&to=${to}"  | sed '/res/!d;s/<[^>]*>//g'`
     [ ${#equation} -le 2 ] && exit 0
     rhs=`echo $equation | cut -d ' ' -f4-`
     echo \
