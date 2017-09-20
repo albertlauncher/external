@@ -41,11 +41,18 @@ build_json() {
     "name": "$row",
     "icon": "copyq-normal",
     "description": "$count",
-    "actions": [{
-        "name": "copy $row to clipboard",
-        "command": "copyq",
-        "arguments": ["select($count); sleep(50); paste()"]
-    }]
+    "actions": [
+        {
+            "name": "paste directly",
+            "command": "copyq",
+            "arguments": ["select($count); sleep(50); paste()"]
+        },
+        {
+            "name": "copy to clipboard",
+            "command": "copyq",
+            "arguments": ["select", "$count"]
+        }
+    ]
 },
 EOM
 
