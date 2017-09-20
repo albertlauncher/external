@@ -45,7 +45,7 @@ build_json() {
         {
             "name": "paste directly",
             "command": "copyq",
-            "arguments": ["select($count); sleep(50); paste()"]
+            "arguments": ["select($count); sleep(60); paste()"]
         },
         {
             "name": "copy to clipboard",
