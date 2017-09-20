@@ -12,7 +12,7 @@ send_metadata() {
     "version":"1.3",
     "author":"BarbUk",
     "dependencies":["copyq"],
-    "trigger":"cq "
+    "trigger":"cq"
 }'
     echo -n "${metadata}"
 }
@@ -99,7 +99,7 @@ main() {
 
         "QUERY")
             ALBERT_QUERY=${ALBERT_QUERY:-}
-            QUERYSTRING="${ALBERT_QUERY:3}"
+            QUERYSTRING="${ALBERT_QUERY:2}"
             build_albert_query "$QUERYSTRING"
             exit 0
         ;;
