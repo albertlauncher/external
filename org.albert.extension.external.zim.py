@@ -1,9 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import os
 import re
+import sys
 import json
+import shutil
 from subprocess import Popen, PIPE
 
 
@@ -101,23 +103,14 @@ def metadata():
             "name": "Zim Plugin",
             "trigger": "z",
             "author": "Jonathan Beaulieu <123.jonathan@gmail.com>",
-            "dependencies": []}
+            "dependencies": ["fuzzywuzzy", "zim"]}
 
 
 def _init():
-    return
-
-
-def _del():
-    return
-
-
-def begin():
-    return
-
-
-def end():
-    return
+    # Check if zim is installed.
+    if shutil.which("zim") is None:
+        print("'zim' is not in $PATH.")
+        sys.exit(1)
 
 
 def make_action(name="Open", command="zim", args=[]):
@@ -216,15 +209,8 @@ def main():
         res = metadata()
     elif op == "INITIALIZE":
         res = _init()
-    elif op == "FINALIZE":
-        res = _del()
-    elif op == "SETUPSESSION":
-        res = begin()
-    elif op == "TEARDOWNSESSION":
-        res = end()
     elif op == "QUERY":
         res = query(os.environ["ALBERT_QUERY"])
-
     if res:
         print(json.dumps(res))
 
