@@ -14,7 +14,7 @@ send_metadata() {
         "dependencies":["copyq"],
         "trigger":"cq ",
         "description": "Access to the CopyQ clipboard manager.",
-        "usage_example": "cp <search string>"
+        "usage_example": "cq <search string>"
     }'
     echo -n "${metadata}"
 }
