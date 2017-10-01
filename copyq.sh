@@ -19,6 +19,17 @@ send_metadata() {
     echo -n "${metadata}"
 }
 
+## search a string in copyq stack
+copyq_search_row() {
+    local string="$1"
+    local script="var match = '$string';
+var i = 0;
+while (i < size() && str(read(i)).indexOf(match) === -1)
+    ++i;
+print(i);"
+    echo "$script" | copyq eval -
+}
+
 ## get a row from copyq history stack
 copyq_get_row() {
     local copyq_row
@@ -62,14 +73,15 @@ EOM
 }
 
 build_albert_query() {
-    local count="$1"
+    local query="$1"
     local return='{"items":['
     local json=''
     local row
 
     ## If the query is a number, just get that row from
     ## copyq history stack
-    if [[ $count =~ ^-?[0-9]+$ ]]; then
+    if [ -n "$query" ]; then
+        count=$(copyq_search_row "$query")
         row=$(copyq_get_row "$count")
         json=$(build_json "$count" "$row")
     else
