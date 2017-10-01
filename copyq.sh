@@ -9,7 +9,7 @@ send_metadata() {
     metadata='{
         "iid":"org.albert.extension.external/v3.0",
         "name":"CopyQ",
-        "version":"1.4",
+        "version":"1.5",
         "author":"BarbUk",
         "dependencies":["copyq"],
         "trigger":"cq ",
