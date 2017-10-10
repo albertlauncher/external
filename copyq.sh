@@ -23,10 +23,13 @@ send_metadata() {
 copyq_search_row() {
     local string="$1"
     local script="var match = '$string';
-var i = 0;
-while (i < size() && str(read(i)).indexOf(match) === -1)
+var i =0;
+while ( i < size() ) {
+    if ( str(read(i)).indexOf(match) !== -1 ) {
+        print(i + ' ');
+    }
     ++i;
-print(i);"
+}"
     echo "$script" | copyq eval -
 }
 
@@ -36,7 +39,7 @@ copyq_get_row() {
     local count="$1"
 
     ## I take just the first line, in case there is a block of text
-    copyq_row="$(copyq read text/plain "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
+    copyq_row="$(copyq read text/plain "$count" | tr -d '\n' | sed -e 's/^[[:space:]]*//')"
 
     # clean from non compatible json char
     printf -v clean_copyq_row "%q" "$copyq_row"
@@ -53,12 +56,11 @@ build_json() {
 {
     "name": "$row",
     "icon": "copyq-normal",
-    "description": "$count",
     "actions": [
         {
             "name": "paste directly",
             "command": "copyq",
-            "arguments": ["select($count); sleep(60); paste()"]
+            "arguments": ["select($count); sleep(100); paste()"]
         },
         {
             "name": "copy to clipboard",
@@ -78,24 +80,20 @@ build_albert_query() {
     local json=''
     local row
 
-    ## If the query is a number, just get that row from
-    ## copyq history stack
+    ## If there is a query, search for it
     if [ -n "$query" ]; then
-        count=$(copyq_search_row "$query")
-        row=$(copyq_get_row "$count")
-        json=$(build_json "$count" "$row")
-    else
-        ## else get the last 15
-        for count in {0..14}; do
-            row=$(copyq_get_row "$count")
-            if [[ "$row" == "''" ]]; then
-                continue
-            fi
-            new=$(build_json "$count" "$row")
-
-            json="$json$new"
-        done
+        ids=$(copyq_search_row "$query")
+    else # else get the last 20 items
+        ids=$(seq 0 19)
     fi
+    for id in $ids; do
+        row=$(copyq_get_row "$id")
+        if [[ "$row" == "''" ]]; then
+            continue
+        fi
+        new=$(build_json "$id" "$row")
+        json="$json$new"
+    done
 
     # remove last comma
     json=${json::-1}
