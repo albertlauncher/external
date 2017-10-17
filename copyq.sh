@@ -83,8 +83,8 @@ build_albert_query() {
     ## If there is a query, search for it
     if [ -n "$query" ]; then
         ids=$(copyq_search_row "$query")
-    else # else get the last 20 items
-        ids=$(seq 0 19)
+    else # else get the last 15 items
+        ids=$(seq 0 14)
     fi
     for id in $ids; do
         row=$(copyq_get_row "$id")
