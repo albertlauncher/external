@@ -1,5 +1,7 @@
 ### This is the official repository for external extensions.
 
+***Note: This scripting extension is deprecated as of v0.14.0. Use the pyhton extension instead***
+
 Clone the repository and pull from time to time or download single extensions. Check the [docs](https://albertlauncher.github.io/docs/extending/external/) on external extensions.
 
 To install the extensions in user space type the following in your terminal:
