@@ -9,14 +9,28 @@ send_metadata() {
     metadata='{
         "iid":"org.albert.extension.external/v3.0",
         "name":"CopyQ",
-        "version":"1.4",
+        "version":"1.5",
         "author":"BarbUk",
         "dependencies":["copyq"],
         "trigger":"cq ",
         "description": "Access to the CopyQ clipboard manager.",
-        "usage_example": "cp <search string>"
+        "usage_example": "cq <search string>"
     }'
     echo -n "${metadata}"
+}
+
+## search a string in copyq stack
+copyq_search_row() {
+    local string="$1"
+    local script="var match = '$string';
+var i =0;
+while ( i < size() ) {
+    if ( str(read(i)).indexOf(match) !== -1 ) {
+        print(i + ' ');
+    }
+    ++i;
+}"
+    echo "$script" | copyq eval -
 }
 
 ## get a row from copyq history stack
@@ -25,10 +39,10 @@ copyq_get_row() {
     local count="$1"
 
     ## I take just the first line, in case there is a block of text
-    copyq_row="$(copyq read text/plain "$count" | head -1 | sed -e 's/^[[:space:]]*//')"
+    copyq_row="$(copyq read text/plain "$count" | tr '\n' ' ' | sed -e 's/^[[:space:]]*//')"
 
     # clean from non compatible json char
-    printf -v clean_copyq_row "%q" "$copyq_row"
+    printf -v clean_copyq_row "%q" "${copyq_row:0:100}"
     echo -n "$clean_copyq_row"
 }
 
@@ -41,13 +55,13 @@ build_json() {
     read -r -d '' json << EOM
 {
     "name": "$row",
+    "description": "${count}: $row",
     "icon": "copyq-normal",
-    "description": "$count",
     "actions": [
         {
             "name": "paste directly",
             "command": "copyq",
-            "arguments": ["select($count); sleep(60); paste()"]
+            "arguments": ["select($count); sleep(100); paste()"]
         },
         {
             "name": "copy to clipboard",
@@ -62,28 +76,25 @@ EOM
 }
 
 build_albert_query() {
-    local count="$1"
+    local query="$1"
     local return='{"items":['
     local json=''
     local row
 
-    ## If the query is a number, just get that row from
-    ## copyq history stack
-    if [[ $count =~ ^-?[0-9]+$ ]]; then
-        row=$(copyq_get_row "$count")
-        json=$(build_json "$count" "$row")
-    else
-        ## else get the last 15
-        for count in {0..14}; do
-            row=$(copyq_get_row "$count")
-            if [[ "$row" == "''" ]]; then
-                continue
-            fi
-            new=$(build_json "$count" "$row")
-
-            json="$json$new"
-        done
+    ## If there is a query, search for it
+    if [ -n "$query" ]; then
+        ids=$(copyq_search_row "$query")
+    else # else get the last 15 items
+        ids=$(seq 0 14)
     fi
+    for id in $ids; do
+        row=$(copyq_get_row "$id")
+        if [[ "$row" == "''" ]]; then
+            continue
+        fi
+        new=$(build_json "$id" "$row")
+        json="$json$new"
+    done
 
     # remove last comma
     json=${json::-1}
